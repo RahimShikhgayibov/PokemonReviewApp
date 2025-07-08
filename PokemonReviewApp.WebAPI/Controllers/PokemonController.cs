@@ -1,0 +1,25 @@
+using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
+using PokemonReviewApp.WebAPI.Models;
+using PokemonReviewApp.WebAPI.Repositories.IRepositories;
+
+namespace PokemonReviewApp.WebAPI.Controllers;
+
+[ApiController]
+[Route("api/[controller]")]
+public class PokemonController : ControllerBase
+{
+    private readonly IPokemonRepository _pokemonRepository;
+
+    public PokemonController(IPokemonRepository pokemonRepository)
+    {
+        _pokemonRepository = pokemonRepository;
+    }
+
+    [HttpGet]
+    public ActionResult<IEnumerable<Pokemon>> GetPokemons()
+    {
+        var pokemons = _pokemonRepository.GetPokemons();
+        return Ok(pokemons);
+    }
+}

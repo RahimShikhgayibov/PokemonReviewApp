@@ -2,6 +2,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using PokemonReviewApp.WebAPI.Data;
 using PokemonReviewApp.WebAPI;
+using PokemonReviewApp.WebAPI.Models;
+using PokemonReviewApp.WebAPI.Repositories;
+using PokemonReviewApp.WebAPI.Repositories.IRepositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +15,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddTransient<Seed>();
 
 builder.Services.AddControllers();
+builder.Services.AddScoped<IPokemonRepository, PokemonRepository>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
