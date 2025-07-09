@@ -1,21 +1,38 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using PokemonReviewApp.WebAPI.Data;
-using PokemonReviewApp.WebAPI;
-using PokemonReviewApp.WebAPI.Models;
 using PokemonReviewApp.WebAPI.Repositories;
 using PokemonReviewApp.WebAPI.Repositories.IRepositories;
+using AutoMapper;
+using PokemonReviewApp.WebAPI;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// 1) Database
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(connectionString));
 
+// 2) Seeder
 builder.Services.AddTransient<Seed>();
 
+// 3) AutoMapper — manual registration
+//   a) discover your Profile classes in this assembly (and any referenced ones)
+var mappingConfig = new MapperConfiguration(cfg =>
+{
+    cfg.AddMaps(AppDomain.CurrentDomain.GetAssemblies());
+});
+//   b) build the mapper
+IMapper mapper = mappingConfig.CreateMapper();
+//   c) register both config and mapper
+builder.Services.AddSingleton(mappingConfig);
+builder.Services.AddSingleton(mapper);
+
+// 4) Controllers & DI
 builder.Services.AddControllers();
 builder.Services.AddScoped<IPokemonRepository, PokemonRepository>();
+
+// 5) Swagger/OpenAPI
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
@@ -28,6 +45,7 @@ builder.Services.AddSwaggerGen(c =>
 
 var app = builder.Build();
 
+// auto‑seed in Development
 if (app.Environment.IsDevelopment())
 {
     using var scope = app.Services.CreateScope();
@@ -35,6 +53,7 @@ if (app.Environment.IsDevelopment())
     seeder.SeedDataContext();
 }
 
+// enable Swagger UI at root
 app.UseSwagger();
 app.UseSwaggerUI(c =>
 {
@@ -44,8 +63,5 @@ app.UseSwaggerUI(c =>
 
 app.UseAuthorization();
 app.MapControllers();
-
-//My own minimal test endpoint
-app.MapGet("/ping", () => Results.Ok("pong"));
 
 app.Run();
