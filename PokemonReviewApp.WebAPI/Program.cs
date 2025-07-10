@@ -16,21 +16,23 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 // 2) Seeder
 builder.Services.AddTransient<Seed>();
 
-// 3) AutoMapper — manual registration
-//   a) discover your Profile classes in this assembly (and any referenced ones)
-var mappingConfig = new MapperConfiguration(cfg =>
-{
-    cfg.AddMaps(AppDomain.CurrentDomain.GetAssemblies());
-});
-//   b) build the mapper
-IMapper mapper = mappingConfig.CreateMapper();
-//   c) register both config and mapper
-builder.Services.AddSingleton(mappingConfig);
-builder.Services.AddSingleton(mapper);
+//  3) AutoMapper — manual registration
+//    a) discover your Profile classes in this assembly (and any referenced ones)
+ var mappingConfig = new MapperConfiguration(cfg =>
+ {
+     cfg.AddMaps(AppDomain.CurrentDomain.GetAssemblies());
+ });
+//    b) build the mapper
+ IMapper mapper = mappingConfig.CreateMapper();
+//    c) register both config and mapper
+ builder.Services.AddSingleton(mappingConfig);
+ builder.Services.AddSingleton(mapper);
 
 // 4) Controllers & DI
 builder.Services.AddControllers();
 builder.Services.AddScoped<IPokemonRepository, PokemonRepository>();
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+builder.Services.AddScoped<ICountryRepository, CountryRepository>();
 
 // 5) Swagger/OpenAPI
 builder.Services.AddEndpointsApiExplorer();

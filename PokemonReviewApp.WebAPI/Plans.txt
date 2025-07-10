@@ -1,0 +1,6 @@
+*) i make automapper and automapper.di 12.0.1 but i must find another way to use modern technology
+i must level up my api's
+
+1)finish gets
+2)finish posts
+3)finish deletes
