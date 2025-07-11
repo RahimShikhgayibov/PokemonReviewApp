@@ -4,3 +4,7 @@ i must level up my api's
 1)finish gets
 2)finish posts
 3)finish deletes
+
+
+.)make ef core query some corrections
+.)make api level ups

@@ -33,6 +33,7 @@ builder.Services.AddControllers();
 builder.Services.AddScoped<IPokemonRepository, PokemonRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<ICountryRepository, CountryRepository>();
+builder.Services.AddScoped<IOwnerRepository, OwnerRepository>();
 
 // 5) Swagger/OpenAPI
 builder.Services.AddEndpointsApiExplorer();
