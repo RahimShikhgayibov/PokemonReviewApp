@@ -23,20 +23,20 @@ public class OwnerController : ControllerBase
     }
     
     [HttpGet("owners/{id}")]
-    public ActionResult<Owner> GetPokemon(int id)
+    public ActionResult<Owner> GetOwner(int id)
     {
         var owner = _ownerRepository.GetOwner(id);
         return Ok(owner);
     }
     
-    [HttpGet("owners/pokemons/{pokemonId}")]
+    [HttpGet("owners/pokemon/{pokemonId}")]
     public ActionResult<IEnumerable<Owner>> GetOwnerOfPokemon(int pokemonId)
     {
         var owners = _ownerRepository.GetOwnerOfPokemon(pokemonId);
         return Ok(owners);
     }
     
-    [HttpGet("owners/{pokemonId}")]
+    [HttpGet("owners/owner/{pokemonId}")]
     public ActionResult<IEnumerable<Pokemon>> GetPokemonByOwner(int ownerId)
     {
         var pokemons = _ownerRepository.GetPokemonByOwner(ownerId);
