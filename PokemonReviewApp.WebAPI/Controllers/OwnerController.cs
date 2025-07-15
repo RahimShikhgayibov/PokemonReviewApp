@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using PokemonReviewApp.WebAPI.Dtos;
 using PokemonReviewApp.WebAPI.Models;
 using PokemonReviewApp.WebAPI.Repositories.IRepositories;
 
@@ -43,5 +44,19 @@ public class OwnerController : ControllerBase
         return Ok(pokemons);
     }
     
-    
+    [HttpPost]
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public ActionResult<OwnerDto> CreateCategory([FromBody] OwnerDto ownerDto)
+    {
+        if (ownerDto == null || string.IsNullOrWhiteSpace(ownerDto.FirstName) || string.IsNullOrWhiteSpace(ownerDto.LastName))
+            return BadRequest();
+
+        var created = _ownerRepository.CreateOwner(ownerDto);
+        
+        return CreatedAtAction(
+            nameof(GetOwner),
+            new { id = created.Id },
+            created);
+    }
 }

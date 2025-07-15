@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using PokemonReviewApp.WebAPI.Dtos;
 using PokemonReviewApp.WebAPI.Models;
 using PokemonReviewApp.WebAPI.Repositories.IRepositories;
 
@@ -34,5 +35,21 @@ public class CategoryController : ControllerBase
     {
         var pokemons = _categoryRepository.GetPokemonsByCategory(categoryId);
         return Ok(pokemons);
+    }
+
+    [HttpPost]
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public ActionResult<CategoryDto> CreateCategory([FromBody] CategoryDto categoryDto)
+    {
+        if (categoryDto == null || string.IsNullOrWhiteSpace(categoryDto.Name))
+            return BadRequest();
+
+        var created = _categoryRepository.CreateCategory(categoryDto);
+        
+        return CreatedAtAction(
+            nameof(GetCategory),
+            new { id = created.Id },
+            created);
     }
 }

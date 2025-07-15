@@ -5,6 +5,8 @@ i must level up my api's
 2)finish posts
 3)finish deletes
 
-
+.)throw exception problems(no throw or wrong throw fix)
+.)program.cs analysis and amendments
+.)mapper analysis and fix(in also repositories)
 .)make ef core query some corrections
 .)make api level ups

@@ -10,26 +10,22 @@ var builder = WebApplication.CreateBuilder(args);
 
 // 1) Database
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql(connectionString));
+builder.Services.AddDbContext<AppDbContext>(opts =>
+    opts.UseNpgsql(connectionString));
 
 // 2) Seeder
 builder.Services.AddTransient<Seed>();
 
-//  3) AutoMapper — manual registration
-//    a) discover your Profile classes in this assembly (and any referenced ones)
- var mappingConfig = new MapperConfiguration(cfg =>
- {
-     cfg.AddMaps(AppDomain.CurrentDomain.GetAssemblies());
- });
-//    b) build the mapper
- IMapper mapper = mappingConfig.CreateMapper();
-//    c) register both config and mapper
- builder.Services.AddSingleton(mappingConfig);
- builder.Services.AddSingleton(mapper);
+// 3) AutoMapper
+var mappingConfig = new MapperConfiguration(cfg =>
+{
+    cfg.AddMaps(AppDomain.CurrentDomain.GetAssemblies());
+});
+IMapper mapper = mappingConfig.CreateMapper();
+builder.Services.AddSingleton(mappingConfig);
+builder.Services.AddSingleton(mapper);
 
-// 4) Controllers & DI
-builder.Services.AddControllers();
+// 4) Repositories & Controllers
 builder.Services.AddScoped<IPokemonRepository, PokemonRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<ICountryRepository, CountryRepository>();
@@ -37,36 +33,51 @@ builder.Services.AddScoped<IOwnerRepository, OwnerRepository>();
 builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
 builder.Services.AddScoped<IReviewerRepository, ReviewerRepository>();
 
-// 5) Swagger/OpenAPI
+builder.Services.AddControllers();
+
+// 5) CORS (optional—but helps if swagger UI can’t reach swagger.json)
+builder.Services.AddCors(opts =>
+    opts.AddDefaultPolicy(policy =>
+        policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader()));
+
+// 6) Swagger/OpenAPI
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo {
-        Title = "Pokemon API",
-        Version = "v1",
+        Title = "Pokemon API", Version = "v1",
         Description = "API with automatic seeding"
     });
 });
 
 var app = builder.Build();
 
-// auto‑seed in Development
+// Auto‑seed if in Development
 if (app.Environment.IsDevelopment())
 {
     using var scope = app.Services.CreateScope();
-    var seeder = scope.ServiceProvider.GetRequiredService<Seed>();
-    seeder.SeedDataContext();
+    scope.ServiceProvider.GetRequiredService<Seed>().SeedDataContext();
 }
 
-// enable Swagger UI at root
+// 7) Middleware pipeline
+//app.UseHttpsRedirection();
+
+app.UseRouting();
+
+// Apply CORS (if you enabled it)
+app.UseCors();
+
+app.UseAuthorization();
+
+// Serve swagger JSON and UI at root
 app.UseSwagger();
 app.UseSwaggerUI(c =>
 {
     c.SwaggerEndpoint("/swagger/v1/swagger.json", "Pokemon API V1");
-    c.RoutePrefix = string.Empty;
+    c.RoutePrefix = string.Empty;    // UI at "/"
 });
 
-app.UseAuthorization();
+// Map your controllers
 app.MapControllers();
 
 app.Run();

@@ -43,4 +43,20 @@ public class CountryController : ControllerBase
         var country = _countryRepository.GetOwnersFromACountry(categoryId);
         return Ok(country);
     }
+    
+    [HttpPost]
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public ActionResult<CountryDto> CreateCategory([FromBody] CountryDto countryDto)
+    {
+        if (countryDto == null || string.IsNullOrWhiteSpace(countryDto.Name))
+            return BadRequest();
+
+        var created = _countryRepository.CreateCountry(countryDto);
+        
+        return CreatedAtAction(
+            nameof(GetCountry),
+            new { id = created.Id },
+            created);
+    }
 }

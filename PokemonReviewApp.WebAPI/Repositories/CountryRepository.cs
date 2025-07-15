@@ -43,4 +43,20 @@ public class CountryRepository : ICountryRepository
     {
         return _context.Countries.Any(e => e.Id == id);
     }
+
+    public CountryDto CreateCountry(CountryDto countryDto)
+    {
+        if (!CountryExists(countryDto.Id))
+        {
+            var entity = _mapper.Map<Country>(countryDto);
+            _context.Countries.Add(entity);
+            _context.SaveChanges();
+        
+            return _mapper.Map<CountryDto>(entity);
+        }
+        else
+        {
+            throw new Exception($"Country with id {countryDto.Id} already exists");
+        }
+    }
 }

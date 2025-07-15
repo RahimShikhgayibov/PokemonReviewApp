@@ -42,4 +42,20 @@ public class OwnerRepository : IOwnerRepository
     {
         return _context.Owners.Any(o => o.Id == id);
     }
+
+    public OwnerDto CreateOwner(OwnerDto ownerDto)
+    {
+        if (!OwnerExists(ownerDto.Id))
+        {
+            var entity = _mapper.Map<Owner>(ownerDto);
+            _context.Owners.Add(entity);
+            _context.SaveChanges();
+        
+            return _mapper.Map<OwnerDto>(entity);
+        }
+        else
+        {
+            throw new Exception($"Owner with id {ownerDto.Id} already exists");
+        }
+    }
 }

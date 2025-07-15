@@ -42,4 +42,22 @@ public class CategoryRepository : ICategoryRepository
     {
         return _context.Categories.Any(e => e.Id == id);
     }
+
+    public CategoryDto CreateCategory(CategoryDto categoryDto)
+    {
+        if (!CategoryExists(categoryDto.Id))
+        {
+            var entity = _mapper.Map<Category>(categoryDto);
+            _context.Categories.Add(entity);
+            _context.SaveChanges();
+        
+            return _mapper.Map<CategoryDto>(entity);
+        }
+        else
+        {
+            throw new Exception($"Category with id {categoryDto.Id} already exists");
+        }
+    }
+
+    
 }
