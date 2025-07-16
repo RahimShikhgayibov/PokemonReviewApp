@@ -36,4 +36,20 @@ public class ReviewController : ControllerBase
         return Ok(review);
     }
     
+    [HttpPost]
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public ActionResult<ReviewDto> CreateReview([FromBody] ReviewDto reviewDto)
+    {
+        if (reviewDto == null || string.IsNullOrWhiteSpace(reviewDto.Text))
+            return BadRequest();
+
+        var created = _reviewRepository.CreateReview(reviewDto);
+        
+        return CreatedAtAction(
+            nameof(GetReview),
+            new { id = created.Id },
+            created);
+    }
+    
 }

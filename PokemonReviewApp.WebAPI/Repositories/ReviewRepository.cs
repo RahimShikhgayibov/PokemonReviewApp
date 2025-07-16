@@ -2,6 +2,7 @@ using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using PokemonReviewApp.WebAPI.Data;
 using PokemonReviewApp.WebAPI.Dtos;
+using PokemonReviewApp.WebAPI.Models;
 using PokemonReviewApp.WebAPI.Repositories.IRepositories;
 
 namespace PokemonReviewApp.WebAPI.Repositories;
@@ -35,5 +36,21 @@ public class ReviewRepository : IReviewRepository
     public bool ReviewExists(int id)
     {
         return _context.Reviews.Any(r => r.Id == id);
+    }
+
+    public ReviewDto CreateReview(ReviewDto review)
+    {
+        if (!ReviewExists(review.Id))
+        {
+            var entity = _mapper.Map<Review>(review);
+            _context.Reviews.Add(entity);
+            _context.SaveChanges();
+        
+            return _mapper.Map<ReviewDto>(entity);
+        }
+        else
+        {
+            throw new Exception($"Review with id {review.Id} already exists");
+        }
     }
 }

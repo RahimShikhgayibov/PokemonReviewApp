@@ -9,4 +9,5 @@ public interface IReviewRepository
     ICollection<ReviewDto> GetReviewsOfPokemon(int pokemonId);
     ReviewDto GetReview(int id);
     bool ReviewExists(int id);
+    ReviewDto CreateReview(ReviewDto review);
 }

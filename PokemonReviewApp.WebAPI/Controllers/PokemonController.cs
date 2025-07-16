@@ -30,4 +30,20 @@ public class PokemonController : ControllerBase
         var pokemon = _pokemonRepository.GetPokemon(id);
         return Ok(pokemon);
     }
+    
+    [HttpPost]
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public ActionResult<PokemonDto> CreatePokemon([FromBody] PokemonDto pokemonDto)
+    {
+        if (pokemonDto == null || string.IsNullOrWhiteSpace(pokemonDto.Name))
+            return BadRequest();
+
+        var created = _pokemonRepository.CreatePokemon(pokemonDto);
+        
+        return CreatedAtAction(
+            nameof(GetPokemon),
+            new { id = created.Id },
+            created);
+    }
 }

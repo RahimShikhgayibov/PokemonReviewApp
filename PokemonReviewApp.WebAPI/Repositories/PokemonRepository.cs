@@ -38,4 +38,25 @@ public class PokemonRepository : IPokemonRepository
 
         return dto;
     }
+
+    public PokemonDto CreatePokemon(PokemonDto pokemon)
+    {
+        if (!PokemonExists(pokemon.Id))
+        {
+            var entity = _mapper.Map<Pokemon>(pokemon);
+            _context.Pokemons.Add(entity);
+            _context.SaveChanges();
+        
+            return _mapper.Map<PokemonDto>(entity);
+        }
+        else
+        {
+            throw new Exception($"Pokemon with id {pokemon.Id} already exists");
+        }
+    }
+
+    public bool PokemonExists(int id)
+    {
+        return _context.Pokemons.Any(e => e.Id == id);
+    }
 }

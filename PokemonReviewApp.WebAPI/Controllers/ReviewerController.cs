@@ -35,4 +35,20 @@ public class ReviewerController : ControllerBase
         var reviews = _reviewerRepository.GetReviewsByReviewer(reviewerId);
         return Ok(reviews);
     }
+    
+    [HttpPost]
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public ActionResult<ReviewerDto> CreateCategory([FromBody] ReviewerDto reviewerDto)
+    {
+        if (reviewerDto == null || string.IsNullOrWhiteSpace(reviewerDto.FirstName))
+            return BadRequest();
+
+        var created = _reviewerRepository.CreateReviewer(reviewerDto);
+        
+        return CreatedAtAction(
+            nameof(GetReviewer),
+            new { id = created.Id },
+            created);
+    }
 }
