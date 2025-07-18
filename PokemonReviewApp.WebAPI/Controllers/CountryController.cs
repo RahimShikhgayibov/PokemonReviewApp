@@ -59,4 +59,20 @@ public class CountryController : ControllerBase
             new { id = created.Id },
             created);
     }
+    
+    [HttpPut]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public ActionResult<CountryDto> UpdateCountry([FromBody] CountryDto countryDto)
+    {
+        if (countryDto == null || string.IsNullOrWhiteSpace(countryDto.Name))
+            return BadRequest();
+
+        var created = _countryRepository.UpdateCountry(countryDto);
+        
+        return CreatedAtAction(
+            nameof(GetCountry),
+            new { id = created.Id },
+            created);
+    }
 }

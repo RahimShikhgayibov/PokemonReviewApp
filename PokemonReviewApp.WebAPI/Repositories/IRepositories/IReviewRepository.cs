@@ -10,4 +10,5 @@ public interface IReviewRepository
     ReviewDto GetReview(int id);
     bool ReviewExists(int id);
     ReviewDto CreateReview(ReviewDto review);
+    ReviewDto UpdateReview(ReviewDto review);
 }

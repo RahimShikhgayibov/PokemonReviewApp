@@ -10,4 +10,5 @@ public interface ICategoryRepository
     ICollection<PokemonDto> GetPokemonsByCategory(int id);
     bool CategoryExists(int id);
     CategoryDto CreateCategory(CategoryDto category);
+    CategoryDto UpdateCategory(CategoryDto category);
 }

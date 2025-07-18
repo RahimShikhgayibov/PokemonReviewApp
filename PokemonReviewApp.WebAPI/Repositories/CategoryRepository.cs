@@ -59,5 +59,19 @@ public class CategoryRepository : ICategoryRepository
         }
     }
 
-    
+    public CategoryDto UpdateCategory(CategoryDto categoryDto)
+    {
+        if (CategoryExists(categoryDto.Id))
+        {
+            var entity = _mapper.Map<Category>(categoryDto);
+            _context.Categories.Update(entity);
+            _context.SaveChanges();
+        
+            return _mapper.Map<CategoryDto>(entity);
+        }
+        else
+        {
+            throw new Exception($"Category with id {categoryDto.Id} doesn't exists");
+        }
+    }
 }

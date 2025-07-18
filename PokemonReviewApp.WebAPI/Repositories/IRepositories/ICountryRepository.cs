@@ -11,4 +11,5 @@ public interface ICountryRepository
     ICollection<OwnerDto> GetOwnersFromACountry(int countryId);
     bool CountryExists(int id);
     CountryDto CreateCountry(CountryDto country);
+    CountryDto UpdateCountry(CountryDto country);
 }

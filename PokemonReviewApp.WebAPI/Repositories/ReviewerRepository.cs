@@ -53,4 +53,20 @@ public class ReviewerRepository : IReviewerRepository
             throw new Exception($"Reviewer with id {reviewer.Id} already exists");
         }
     }
+
+    public ReviewerDto UpdateReviewer(ReviewerDto reviewer)
+    {
+        if (ReviewerExists(reviewer.Id))
+        {
+            var entity = _mapper.Map<Reviewer>(reviewer);
+            _context.Reviewers.Update(entity);
+            _context.SaveChanges();
+        
+            return _mapper.Map<ReviewerDto>(entity);
+        }
+        else
+        {
+            throw new Exception($"Reviewer with id {reviewer.Id} doesn't exists");
+        }
+    }
 }

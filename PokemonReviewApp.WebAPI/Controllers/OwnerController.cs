@@ -59,4 +59,20 @@ public class OwnerController : ControllerBase
             new { id = created.Id },
             created);
     }
+    
+    [HttpPut]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public ActionResult<OwnerDto> UpdateOwner([FromBody] OwnerDto ownerDto)
+    {
+        if (ownerDto == null || string.IsNullOrWhiteSpace(ownerDto.FirstName) || string.IsNullOrWhiteSpace(ownerDto.LastName))
+            return BadRequest();
+
+        var created = _ownerRepository.UpdateOwner(ownerDto);
+        
+        return CreatedAtAction(
+            nameof(GetOwner),
+            new { id = created.Id },
+            created);
+    }
 }

@@ -5,6 +5,9 @@ i must level up my api's
 2)finish posts
 3)finish deletes
 
+
+.)enhance db connections and dbsets
+.)get post put delete methods best variations
 .)throw exception problems(no throw or wrong throw fix)
 .)program.cs analysis and amendments
 .)mapper analysis and fix(in also repositories)

@@ -51,4 +51,20 @@ public class ReviewerController : ControllerBase
             new { id = created.Id },
             created);
     }
+    
+    [HttpPut]
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public ActionResult<ReviewerDto> UpdateReviewer([FromBody] ReviewerDto reviewerDto)
+    {
+        if (reviewerDto == null || string.IsNullOrWhiteSpace(reviewerDto.FirstName))
+            return BadRequest();
+
+        var created = _reviewerRepository.UpdateReviewer(reviewerDto);
+        
+        return CreatedAtAction(
+            nameof(GetReviewer),
+            new { id = created.Id },
+            created);
+    }
 }

@@ -52,4 +52,20 @@ public class ReviewController : ControllerBase
             created);
     }
     
+    [HttpPut]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public ActionResult<ReviewDto> UpdateReview([FromBody] ReviewDto reviewDto)
+    {
+        if (reviewDto == null || string.IsNullOrWhiteSpace(reviewDto.Text))
+            return BadRequest();
+
+        var created = _reviewRepository.UpdateReview(reviewDto);
+        
+        return CreatedAtAction(
+            nameof(GetReview),
+            new { id = created.Id },
+            created);
+    }
+    
 }

@@ -52,4 +52,21 @@ public class CategoryController : ControllerBase
             new { id = created.Id },
             created);
     }
+    
+    [HttpPut]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public ActionResult<CategoryDto> UpdateCategory([FromBody] CategoryDto categoryDto)
+    {
+        if (categoryDto == null || string.IsNullOrWhiteSpace(categoryDto.Name))
+            return BadRequest();
+
+        var created = _categoryRepository.UpdateCategory(categoryDto);
+        
+        return CreatedAtAction(
+            nameof(GetCategory),
+            new { id = created.Id },
+            created);
+    }
+    
 }

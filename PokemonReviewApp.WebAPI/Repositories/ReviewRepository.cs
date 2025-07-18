@@ -53,4 +53,20 @@ public class ReviewRepository : IReviewRepository
             throw new Exception($"Review with id {review.Id} already exists");
         }
     }
+
+    public ReviewDto UpdateReview(ReviewDto review)
+    {
+        if (ReviewExists(review.Id))
+        {
+            var entity = _mapper.Map<Review>(review);
+            _context.Reviews.Update(entity);
+            _context.SaveChanges();
+        
+            return _mapper.Map<ReviewDto>(entity);
+        }
+        else
+        {
+            throw new Exception($"Review with id {review.Id} doesn't exists");
+        }
+    }
 }

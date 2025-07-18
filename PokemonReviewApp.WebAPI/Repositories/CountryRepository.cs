@@ -59,4 +59,20 @@ public class CountryRepository : ICountryRepository
             throw new Exception($"Country with id {countryDto.Id} already exists");
         }
     }
+
+    public CountryDto UpdateCountry(CountryDto countryDto)
+    {
+        if (CountryExists(countryDto.Id))
+        {
+            var entity = _mapper.Map<Country>(countryDto);
+            _context.Countries.Update(entity);
+            _context.SaveChanges();
+        
+            return _mapper.Map<CountryDto>(entity);
+        }
+        else
+        {
+            throw new Exception($"Country with id {countryDto.Id} doesn't exists");
+        }
+    }
 }
